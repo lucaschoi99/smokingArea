@@ -59,6 +59,27 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${(props) => props.theme.bgColor};
     color: ${(props) => props.theme.textColor};
   }
+  #root {
+    /* Mobile UI */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    width: 100%;
+    max-width: 743px;
+    margin: 0 auto;
+
+    min-height: 100vh;
+    min-height: -moz-available;
+    min-height: -webkit-fill-available;
+    min-height: fill-available;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+  }
 `;
 
 function App() {
