@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { Map as RawMap, MapMarker } from "react-kakao-maps-sdk";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { mapCenterState, myCoordsState } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
@@ -24,11 +24,23 @@ const MyLocationBtnWrapper = styled.div`
 
 const Map = () => {
   const mapRef = useRef<kakao.maps.Map>(null);
-  const mapCenter = useRecoilValue(mapCenterState);
+  const [mapCenter, setMapcenter] = useRecoilState(mapCenterState);
   const myCoords = useRecoilValue(myCoordsState);
 
+  const onMapDragEnd = (map: kakao.maps.Map) => {
+    setMapcenter({
+      lat: map.getCenter().getLat(),
+      lng: map.getCenter().getLng(),
+    });
+  };
+
   return (
-    <KakaoMap ref={mapRef} center={mapCenter} level={3}>
+    <KakaoMap
+      ref={mapRef}
+      center={mapCenter}
+      level={3}
+      onDragEnd={onMapDragEnd}
+    >
       {!!myCoords && ( // MyMarker
         <MapMarker
           position={myCoords}
