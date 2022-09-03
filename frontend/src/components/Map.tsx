@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Map as RawMap, MapMarker } from "react-kakao-maps-sdk";
 import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
@@ -13,6 +13,7 @@ import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
 import Nav from "./Nav";
 import ReSearchBtn from "./ReSearchBtn";
+import { fetchSmokingAreas } from "../apis";
 
 const KakaoMap = styled(RawMap)`
   width: 100%;
@@ -49,7 +50,7 @@ const ReSearchBtnWrapper = styled.div`
 `;
 
 const Map = () => {
-  const mapRef = useRef<kakao.maps.Map>(null);
+  const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [mapCenter, setMapcenter] = useRecoilState(mapCenterState);
   const myCoords = useRecoilValue(myCoordsState);
 
@@ -79,9 +80,23 @@ const Map = () => {
     setIsBoundsChanged(true);
   };
 
+  useEffect(() => {
+    if (map) {
+      const northEast = map.getBounds().getNorthEast();
+      const southWest = map.getBounds().getSouthWest();
+      // fetchSmokingAreas(
+      //   {
+      //     lat: northEast.getLat(),
+      //     lng: northEast.getLng(),
+      //   },
+      //   { lat: southWest.getLat(), lng: southWest.getLng() }
+      // );
+    }
+  }, [map]);
+
   return (
     <KakaoMap
-      ref={mapRef}
+      ref={setMap}
       center={mapCenter}
       level={3}
       onDragEnd={onMapDragEnd}
