@@ -43,10 +43,11 @@ const MyLocationBtn = () => {
   const setMapCenter = useSetRecoilState(mapCenterState);
 
   const onClick = () => {
-    if ("geolocation" in navigator) {
-      /* 위치정보 사용 가능 */
-      if (!myCoords) {
-        // 현재 watch중이지 않다면, 유저의 현재 위치를 watch.
+    if (!myCoords) {
+      // 현재 유저의 현재 위치를 watch중이지 않음.
+      if ("geolocation" in navigator) {
+        /* 위치정보 사용 가능 */
+        // 유저의 현재 위치를 watch.
         navigator.geolocation.watchPosition((position) => {
           const { latitude, longitude } = position.coords;
           setMyCoords({ lat: latitude, lng: longitude });
@@ -58,11 +59,12 @@ const MyLocationBtn = () => {
           setMapCenter({ lat: latitude, lng: longitude });
         });
       } else {
-        // 현재 위치로 지도를 이동
-        setMapCenter(myCoords);
+        /* 위치정보 사용 불가능 */
       }
     } else {
-      /* 위치정보 사용 불가능 */
+      // 현재 유저의 현재 위치를 watch중임.
+      // 현재 위치로 지도를 이동
+      setMapCenter(myCoords);
     }
   };
 

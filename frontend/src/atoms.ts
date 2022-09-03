@@ -1,5 +1,11 @@
 import { atom } from "recoil";
 
+export const defaultCoords = {
+  // 서울시청 좌표
+  lat: 37.5666805,
+  lng: 126.9784147,
+};
+
 export interface ICoords {
   lat: number;
   lng: number;
@@ -22,9 +28,5 @@ export const myCoordsState = atom<ICoords | undefined>({
 
 export const mapCenterState = atom<ICoords>({
   key: "mapCenterState",
-  default: {
-    // 서울시청 좌표
-    lat: 37.5666805,
-    lng: 126.9784147,
-  },
+  default: defaultCoords,
 });
