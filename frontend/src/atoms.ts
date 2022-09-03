@@ -30,3 +30,18 @@ export const mapCenterState = atom<ICoords>({
   key: "mapCenterState",
   default: defaultCoords,
 });
+
+export const boundsChangedState = atom<boolean>({
+  key: "boundsChangedState",
+  default: false,
+});
+
+export const mapNorthEastState = atom<ICoords | undefined>({
+  key: "mapNorthEastState",
+  default: undefined,
+});
+
+export const mapSouthWestState = atom<ICoords | undefined>({
+  key: "mapSouthWestState",
+  default: undefined,
+});
