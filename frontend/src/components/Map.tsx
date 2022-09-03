@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { mapCenterState, myCoordsState } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
+import Nav from "./Nav";
 
 const KakaoMap = styled(RawMap)`
   width: 100%;
@@ -20,6 +21,15 @@ const MyLocationBtnWrapper = styled.div`
   width: 50px;
   height: 50px;
   border-radius: 25px;
+`;
+
+const NavWrapper = styled.div`
+  position: absolute;
+  bottom: 30px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 90%;
 `;
 
 const Map = () => {
@@ -62,6 +72,9 @@ const Map = () => {
       <MyLocationBtnWrapper>
         <MyLocationBtn />
       </MyLocationBtnWrapper>
+      <NavWrapper>
+        <Nav />
+      </NavWrapper>
     </KakaoMap>
   );
 };
