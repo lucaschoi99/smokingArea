@@ -6,6 +6,9 @@ import {
 import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import styled from "styled-components";
+import { useRecoilValue } from "recoil";
+import { loggedInState } from "../atoms";
+import { useNavigate } from "react-router-dom";
 
 const Wrapper = styled.nav`
   display: flex;
@@ -40,21 +43,38 @@ const Text = styled.h3`
 `;
 
 const Nav = () => {
+  const isLoggedIn = useRecoilValue(loggedInState);
+  const navigate = useNavigate();
+
+  const onReportClick = () => {
+    navigate("/report");
+  };
+
+  const onUserClick = () => {
+    if (!isLoggedIn) return navigate("/login");
+  };
+
+  const onNavigateClick = () => {};
+
+  const onBookmarkClick = () => {
+    if (!isLoggedIn) return navigate("/login");
+  };
+
   return (
     <Wrapper>
-      <Item key="report">
+      <Item onClick={onReportClick} key="report">
         <Icon icon={faTriangleExclamation} />
         <Text>신고하기</Text>
       </Item>
-      <Item key="user">
+      <Item onClick={onUserClick} key="user">
         <Icon icon={faCircleUser} />
         <Text>마이페이지</Text>
       </Item>
-      <Item key="navigate">
+      <Item onClick={onNavigateClick} key="navigate">
         <Icon icon={faArrowTrendUp} />
         <Text>바로안내</Text>
       </Item>
-      <Item key="bookmark">
+      <Item onClick={onBookmarkClick} key="bookmark">
         <Icon icon={faStar} />
         <Text>즐겨찾기</Text>
       </Item>

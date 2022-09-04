@@ -45,3 +45,8 @@ export const mapSouthWestState = atom<ICoords | undefined>({
   key: "mapSouthWestState",
   default: undefined,
 });
+
+export const loggedInState = atom<boolean>({
+  key: "loggedInState",
+  default: false,
+});
