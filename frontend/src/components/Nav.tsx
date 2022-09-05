@@ -14,7 +14,8 @@ const Wrapper = styled.nav`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
+  background-color: ${(props) => props.theme.bgColor};
+  color: ${(props) => props.theme.textColor};
   padding: 10px;
   border-radius: 5px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -27,6 +28,7 @@ const Item = styled.button`
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  color: inherit;
 `;
 
 const Icon = styled(FontAwesomeIcon)`
