@@ -67,7 +67,7 @@ const GlobalStyle = createGlobalStyle`
     right: 0;
 
     width: 100%;
-    max-width: 743px;
+    max-width: ${(props) => props.theme.maxWidth};
     margin: 0 auto;
 
     min-height: 100vh;
