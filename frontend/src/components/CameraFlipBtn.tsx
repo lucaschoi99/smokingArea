@@ -1,6 +1,5 @@
 import { faRepeat } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dispatch, SetStateAction } from "react";
 import styled from "styled-components";
 
 const Button = styled.button`
@@ -22,7 +21,7 @@ const Icon = styled(FontAwesomeIcon)`
 `;
 
 interface IProps {
-  setIsUserMode: Dispatch<SetStateAction<boolean>>;
+  setIsUserMode: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CameraFlipBtn = ({ setIsUserMode }: IProps) => {
