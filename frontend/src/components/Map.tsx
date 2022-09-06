@@ -66,33 +66,45 @@ const Map = () => {
     });
   };
 
-  const onMapBoundsChanged = (map: kakao.maps.Map) => {
+  const getBoundsCoords = (map: kakao.maps.Map) => {
     const northEast = map.getBounds().getNorthEast();
     const southWest = map.getBounds().getSouthWest();
-    setNorthEastCoords({
+    const northEastCoords = {
       lat: northEast.getLat(),
       lng: northEast.getLng(),
-    });
-    setSouthWestCoords({
+    };
+    const southWestCoords = {
       lat: southWest.getLat(),
       lng: southWest.getLng(),
-    });
+    };
+    return {
+      northEastCoords,
+      southWestCoords,
+    };
+  };
+
+  const onMapBoundsChanged = (map: kakao.maps.Map) => {
+    const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+    setNorthEastCoords(northEastCoords);
+    setSouthWestCoords(southWestCoords);
     setIsBoundsChanged(true);
   };
 
   useEffect(() => {
-    if (map) {
-      const northEast = map.getBounds().getNorthEast();
-      const southWest = map.getBounds().getSouthWest();
-      // fetchSmokingAreas(
-      //   {
-      //     lat: northEast.getLat(),
-      //     lng: northEast.getLng(),
-      //   },
-      //   { lat: southWest.getLat(), lng: southWest.getLng() }
-      // );
+    if (!!map) {
+      const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+      // fetchSmokingAreas(northEastCoords, southWestCoords);
     }
   }, [map]);
+
+  // 맵 중심이 바뀔 때 Bounds를 재설정.
+  useEffect(() => {
+    if (!!map) {
+      const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+      setNorthEastCoords(northEastCoords);
+      setSouthWestCoords(southWestCoords);
+    }
+  }, [map, mapCenter]);
 
   return (
     <KakaoMap
