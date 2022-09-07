@@ -4,6 +4,7 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   boundsChangedState,
+  isCoordsAvailableState,
   mapCenterState,
   mapNorthEastState,
   mapSouthWestState,
@@ -11,7 +12,7 @@ import {
 } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
-import Nav from "./Nav";
+import NavBar from "./NavBar";
 import ReSearchBtn from "./ReSearchBtn";
 import { fetchSmokingAreas } from "../apis";
 
@@ -22,7 +23,7 @@ const KakaoMap = styled(RawMap)`
   z-index: 0;
 `;
 
-const NavWrapper = styled.div`
+const NavBarWrapper = styled.div`
   position: absolute;
   bottom: 30px;
   left: 0;
@@ -52,8 +53,8 @@ const ReSearchBtnWrapper = styled.div`
 const Map = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [mapCenter, setMapcenter] = useRecoilState(mapCenterState);
+  const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
   const myCoords = useRecoilValue(myCoordsState);
-
   const [isBoundsChanged, setIsBoundsChanged] =
     useRecoilState(boundsChangedState);
   const setNorthEastCoords = useSetRecoilState(mapNorthEastState);
@@ -90,6 +91,7 @@ const Map = () => {
     setIsBoundsChanged(true);
   };
 
+  // default 위치에서 smoking area를 fetch.
   useEffect(() => {
     if (!!map) {
       const { northEastCoords, southWestCoords } = getBoundsCoords(map);
@@ -114,7 +116,7 @@ const Map = () => {
       onDragEnd={onMapDragEnd}
       onBoundsChanged={onMapBoundsChanged}
     >
-      {!!myCoords && ( // MyMarker
+      {isCoordsAvailable && ( // MyMarker
         <MapMarker
           position={myCoords}
           image={{
@@ -132,9 +134,9 @@ const Map = () => {
           }}
         />
       )}
-      <NavWrapper>
-        <Nav />
-      </NavWrapper>
+      <NavBarWrapper>
+        <NavBar />
+      </NavBarWrapper>
       <MyLocationBtnWrapper>
         <MyLocationBtn />
       </MyLocationBtnWrapper>

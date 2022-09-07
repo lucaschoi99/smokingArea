@@ -21,9 +21,9 @@ export const isCoordsAvailableState = atom<boolean>({
   default: false,
 });
 
-export const myCoordsState = atom<ICoords | undefined>({
+export const myCoordsState = atom<ICoords>({
   key: "myCoordsState",
-  default: undefined,
+  default: defaultCoords,
 });
 
 export const mapCenterState = atom<ICoords>({
@@ -36,14 +36,14 @@ export const boundsChangedState = atom<boolean>({
   default: false,
 });
 
-export const mapNorthEastState = atom<ICoords | undefined>({
+export const mapNorthEastState = atom<ICoords>({
   key: "mapNorthEastState",
-  default: undefined,
+  default: defaultCoords,
 });
 
-export const mapSouthWestState = atom<ICoords | undefined>({
+export const mapSouthWestState = atom<ICoords>({
   key: "mapSouthWestState",
-  default: undefined,
+  default: defaultCoords,
 });
 
 export const loggedInState = atom<boolean>({
