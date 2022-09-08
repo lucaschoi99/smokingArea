@@ -9,6 +9,7 @@ import {
   mapNorthEastState,
   mapSouthWestState,
   myCoordsState,
+  smokingAreasState,
 } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
@@ -53,10 +54,11 @@ const ReSearchBtnWrapper = styled.div`
 const Map = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [mapCenter, setMapcenter] = useRecoilState(mapCenterState);
-  const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
-  const myCoords = useRecoilValue(myCoordsState);
   const [isBoundsChanged, setIsBoundsChanged] =
     useRecoilState(boundsChangedState);
+  const [smokingAreas, setSmokingAreas] = useRecoilState(smokingAreasState);
+  const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
+  const myCoords = useRecoilValue(myCoordsState);
   const setNorthEastCoords = useSetRecoilState(mapNorthEastState);
   const setSouthWestCoords = useSetRecoilState(mapSouthWestState);
 
@@ -95,7 +97,15 @@ const Map = () => {
   useEffect(() => {
     if (!!map) {
       const { northEastCoords, southWestCoords } = getBoundsCoords(map);
-      // fetchSmokingAreas(northEastCoords, southWestCoords);
+      (async () => {
+        const result = await fetchSmokingAreas(
+          northEastCoords,
+          southWestCoords
+        );
+        if (!result.isError && !!result?.data) {
+          setSmokingAreas(result.data);
+        }
+      })();
     }
   }, [map]);
 
@@ -134,6 +144,13 @@ const Map = () => {
           }}
         />
       )}
+      {smokingAreas.map((area) => (
+        <MapMarker
+          key={area.id}
+          position={area.coords} // 마커를 표시할 위치
+          title={area.title} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+        />
+      ))}
       <NavBarWrapper>
         <NavBar />
       </NavBarWrapper>

@@ -7,6 +7,7 @@ import {
   boundsChangedState,
   mapNorthEastState,
   mapSouthWestState,
+  smokingAreasState,
 } from "../atoms";
 
 const Button = styled.button`
@@ -32,11 +33,15 @@ const Text = styled.h3`
 
 const ReSearchBtn = () => {
   const setIsBoundsChanged = useSetRecoilState(boundsChangedState);
-  const northWestCoords = useRecoilValue(mapNorthEastState);
+  const setSmokingAreas = useSetRecoilState(smokingAreasState);
+  const northEastCoords = useRecoilValue(mapNorthEastState);
   const southWestCoords = useRecoilValue(mapSouthWestState);
-  const onClick = () => {
-    // fetchSmokingAreas(northWestCoords, southWestCoords);
-    setIsBoundsChanged(false);
+  const onClick = async () => {
+    const result = await fetchSmokingAreas(northEastCoords, southWestCoords);
+    if (!result.isError && !!result?.data) {
+      setSmokingAreas(result.data);
+      setIsBoundsChanged(false);
+    }
   };
   return (
     <Button onClick={onClick}>

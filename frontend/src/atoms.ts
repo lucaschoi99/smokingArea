@@ -11,6 +11,18 @@ export interface ICoords {
   lng: number;
 }
 
+export interface ISmokingAreaPreview {
+  title: string;
+  coords: ICoords;
+  id: string;
+}
+
+export interface ISmokingAreaDetail {
+  title: string;
+  coords: ICoords;
+  id: string;
+}
+
 export const isDarkTheme = atom<boolean>({
   key: "isDarkTheme",
   default: false,
@@ -49,4 +61,9 @@ export const mapSouthWestState = atom<ICoords>({
 export const loggedInState = atom<boolean>({
   key: "loggedInState",
   default: false,
+});
+
+export const smokingAreasState = atom<ISmokingAreaPreview[]>({
+  key: "smokingAreasState",
+  default: [],
 });
