@@ -53,7 +53,7 @@ const NavBar = () => {
   };
 
   const onUserClick = () => {
-    if (!isLoggedIn) return navigate("/login");
+    navigate("/user");
   };
 
   const onNavigateClick = () => {

@@ -94,7 +94,7 @@ const Report = () => {
 
   // 로그인, 위치 정보 동의 확인.
   useEffect(() => {
-    // if (!isLoggedIn) return navigate("/login");
+    // if (!isLoggedIn) return navigate("/login", { replace: true });
 
     // 위치 정보 제공 동의하지 않은 경우
     if (!isCoordsAvailable) {
