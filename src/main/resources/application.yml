@@ -13,6 +13,22 @@ spring:
           show_sql: true
           format_sql: true
 
-logging.level:
-  org.hibernate.SQL: debug
+  url:
+    base: http://localhost:8080
 
+  social:
+    kakao:
+      client_id: 4ec3421d3173c920f23dbc015e54f91d
+      redirect: /user/social/kakao/finish
+      url:
+        login: https://kauth.kakao.com/oauth/authorize
+        token: https://kauth.kakao.com/oauth/token
+        profile: https://kapi.kakao.com/v2/user/me
+
+# exception
+communicationError:
+  code: "-1004"
+  msg: "?? ? ??? ???????."
+
+logging.level:
+  org.hibernate.SQL: trace
