@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRecoilState, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
+  boundsChangedState,
   isCoordsAvailableState,
   mapCenterState,
   myCoordsState,
@@ -39,11 +40,14 @@ const Icon = styled(FontAwesomeIcon)`
 
 const MyLocationBtn = () => {
   const [myCoords, setMyCoords] = useRecoilState(myCoordsState);
-  const setIsCoordsAvailable = useSetRecoilState(isCoordsAvailableState);
+  const [isCoordsAvailable, setIsCoordsAvailable] = useRecoilState(
+    isCoordsAvailableState
+  );
   const setMapCenter = useSetRecoilState(mapCenterState);
+  const setIsBoundsChanged = useSetRecoilState(boundsChangedState);
 
   const onClick = () => {
-    if (!myCoords) {
+    if (!isCoordsAvailable) {
       // 현재 유저의 현재 위치를 watch중이지 않음.
       if ("geolocation" in navigator) {
         /* 위치정보 사용 가능 */
@@ -57,6 +61,7 @@ const MyLocationBtn = () => {
         navigator.geolocation.getCurrentPosition((position) => {
           const { latitude, longitude } = position.coords;
           setMapCenter({ lat: latitude, lng: longitude });
+          setIsBoundsChanged(true);
         });
       } else {
         /* 위치정보 사용 불가능 */
@@ -65,6 +70,7 @@ const MyLocationBtn = () => {
       // 현재 유저의 현재 위치를 watch중임.
       // 현재 위치로 지도를 이동
       setMapCenter(myCoords);
+      setIsBoundsChanged(true);
     }
   };
 

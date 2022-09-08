@@ -44,7 +44,7 @@ const Text = styled.h3`
   text-align: center;
 `;
 
-const Nav = () => {
+const NavBar = () => {
   const isLoggedIn = useRecoilValue(loggedInState);
   const navigate = useNavigate();
 
@@ -53,10 +53,12 @@ const Nav = () => {
   };
 
   const onUserClick = () => {
-    if (!isLoggedIn) return navigate("/login");
+    navigate("/user");
   };
 
-  const onNavigateClick = () => {};
+  const onNavigateClick = () => {
+    navigate("/navigate");
+  };
 
   const onBookmarkClick = () => {
     if (!isLoggedIn) return navigate("/login");
@@ -84,4 +86,4 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default NavBar;

@@ -1,20 +1,21 @@
-import { ICoords } from "./atoms";
+import { ICoords, ISmokingAreaPreview } from "./atoms";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
 export const fetchSmokingAreas = async (
-  northEastCoords: ICoords | undefined,
-  southWestCoords: ICoords | undefined
+  northEastCoords: ICoords,
+  southWestCoords: ICoords
 ) => {
-  if (!northEastCoords || !southWestCoords) return { isError: true };
   try {
-    const response = await fetch(`${API_URL}/`, {
+    const response = await fetch(`${API_URL}/markers/search`, {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        northEastCoords: `(${northEastCoords.lat}, ${northEastCoords.lng})`,
-        southWestCoords: `(${southWestCoords.lat}, ${southWestCoords.lng})`,
+        northEastLat: northEastCoords.lat + "",
+        northEastLng: northEastCoords.lng + "",
+        southWestLat: southWestCoords.lat + "",
+        southWestLng: southWestCoords.lng + "",
       },
     });
 
@@ -22,10 +23,36 @@ export const fetchSmokingAreas = async (
       return { isError: true };
     }
 
-    const data = await response.json();
+    const data = (await response.json()) as ISmokingAreaPreview[];
 
     return { isError: false, data };
   } catch (error) {
     console.log(error);
+    return { isError: true };
+  }
+};
+
+export const fetchNearest = async (myCoords: ICoords) => {
+  try {
+    const response = await fetch(`${API_URL}/markers/nearest`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        myLat: myCoords.lat + "",
+        myLng: myCoords.lng + "",
+      },
+    });
+
+    if (!response.ok) {
+      return { isError: true };
+    }
+
+    const data = (await response.json()) as ISmokingAreaPreview;
+
+    return { isError: false, data };
+  } catch (error) {
+    console.log(error);
+    return { isError: true };
   }
 };
