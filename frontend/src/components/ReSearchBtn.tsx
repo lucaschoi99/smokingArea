@@ -1,5 +1,6 @@
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { fetchSmokingAreas } from "../apis";
@@ -10,7 +11,7 @@ import {
   smokingAreasState,
 } from "../atoms";
 
-const Button = styled.button`
+const Button = styled(motion.button)`
   display: flex;
   align-items: center;
   background-color: white;
@@ -44,7 +45,7 @@ const ReSearchBtn = () => {
     }
   };
   return (
-    <Button onClick={onClick}>
+    <Button layout onClick={onClick}>
       <Icon icon={faArrowRotateRight} />
       <Text>이 지역 재검색</Text>
     </Button>

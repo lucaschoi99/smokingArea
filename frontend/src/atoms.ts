@@ -67,3 +67,8 @@ export const smokingAreasState = atom<ISmokingAreaPreview[]>({
   key: "smokingAreasState",
   default: [],
 });
+
+export const selectedState = atom<ISmokingAreaPreview | null>({
+  key: "selectedState",
+  default: null,
+});
