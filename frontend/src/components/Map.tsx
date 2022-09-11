@@ -5,14 +5,18 @@ import styled from "styled-components";
 import {
   boundsChangedState,
   isCoordsAvailableState,
+  ISmokingAreaPreview,
   mapCenterState,
   mapNorthEastState,
   mapSouthWestState,
   myCoordsState,
+  selectedState,
   smokingAreasState,
 } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
+import marker from "../images/marker.svg";
+import dotMarker from "../images/dotMarker.svg";
 import NavBar from "./NavBar";
 import ReSearchBtn from "./ReSearchBtn";
 import { fetchSmokingAreas } from "../apis";
@@ -57,6 +61,7 @@ const Map = () => {
   const [isBoundsChanged, setIsBoundsChanged] =
     useRecoilState(boundsChangedState);
   const [smokingAreas, setSmokingAreas] = useRecoilState(smokingAreasState);
+  const [selectedMarker, setSelectedMarker] = useRecoilState(selectedState);
   const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
   const myCoords = useRecoilValue(myCoordsState);
   const setNorthEastCoords = useSetRecoilState(mapNorthEastState);
@@ -93,6 +98,11 @@ const Map = () => {
     setIsBoundsChanged(true);
   };
 
+  const onMarkerClick = (area: ISmokingAreaPreview) => {
+    setSelectedMarker(area);
+    setMapcenter(area.coords);
+  };
+
   // default 위치에서 smoking area를 fetch.
   useEffect(() => {
     if (!!map) {
@@ -122,9 +132,11 @@ const Map = () => {
     <KakaoMap
       ref={setMap}
       center={mapCenter}
+      isPanto={true}
       level={3}
       onDragEnd={onMapDragEnd}
       onBoundsChanged={onMapBoundsChanged}
+      onClick={() => setSelectedMarker(null)}
     >
       {isCoordsAvailable && ( // MyMarker
         <MapMarker
@@ -149,6 +161,14 @@ const Map = () => {
           key={area.id}
           position={area.coords} // 마커를 표시할 위치
           title={area.title} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+          onClick={() => onMarkerClick(area)}
+          image={{
+            src: selectedMarker?.id === area.id ? dotMarker : marker,
+            size: {
+              width: selectedMarker?.id === area.id ? 40 : 25,
+              height: selectedMarker?.id === area.id ? 40 : 25,
+            },
+          }}
         />
       ))}
       <NavBarWrapper>
