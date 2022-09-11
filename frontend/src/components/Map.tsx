@@ -20,6 +20,8 @@ import dotMarker from "../images/dotMarker.svg";
 import NavBar from "./NavBar";
 import ReSearchBtn from "./ReSearchBtn";
 import { fetchSmokingAreas } from "../apis";
+import AreaDetail from "./AreaDetail";
+import { AnimatePresence } from "framer-motion";
 
 const KakaoMap = styled(RawMap)`
   width: 100%;
@@ -46,13 +48,15 @@ const MyLocationBtnWrapper = styled.div`
   border-radius: 25px;
 `;
 
-const ReSearchBtnWrapper = styled.div`
+const TopNavWrapper = styled.div`
   position: absolute;
   top: 40px;
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Map = () => {
@@ -171,17 +175,16 @@ const Map = () => {
           }}
         />
       ))}
+      <TopNavWrapper>
+        <AnimatePresence>{!!selectedMarker && <AreaDetail />}</AnimatePresence>
+        {isBoundsChanged && <ReSearchBtn />}
+      </TopNavWrapper>
       <NavBarWrapper>
         <NavBar />
       </NavBarWrapper>
       <MyLocationBtnWrapper>
         <MyLocationBtn />
       </MyLocationBtnWrapper>
-      {isBoundsChanged && (
-        <ReSearchBtnWrapper>
-          <ReSearchBtn />
-        </ReSearchBtnWrapper>
-      )}
     </KakaoMap>
   );
 };
