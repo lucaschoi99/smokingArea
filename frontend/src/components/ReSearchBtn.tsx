@@ -1,5 +1,6 @@
 import { faArrowRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { motion } from "framer-motion";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import { fetchSmokingAreas } from "../apis";
@@ -7,9 +8,10 @@ import {
   boundsChangedState,
   mapNorthEastState,
   mapSouthWestState,
+  smokingAreasState,
 } from "../atoms";
 
-const Button = styled.button`
+const Button = styled(motion.button)`
   display: flex;
   align-items: center;
   background-color: white;
@@ -32,14 +34,18 @@ const Text = styled.h3`
 
 const ReSearchBtn = () => {
   const setIsBoundsChanged = useSetRecoilState(boundsChangedState);
-  const northWestCoords = useRecoilValue(mapNorthEastState);
+  const setSmokingAreas = useSetRecoilState(smokingAreasState);
+  const northEastCoords = useRecoilValue(mapNorthEastState);
   const southWestCoords = useRecoilValue(mapSouthWestState);
-  const onClick = () => {
-    // fetchSmokingAreas(northWestCoords, southWestCoords);
-    setIsBoundsChanged(false);
+  const onClick = async () => {
+    const result = await fetchSmokingAreas(northEastCoords, southWestCoords);
+    if (!result.isError && !!result?.data) {
+      setSmokingAreas(result.data);
+      setIsBoundsChanged(false);
+    }
   };
   return (
-    <Button onClick={onClick}>
+    <Button layout onClick={onClick}>
       <Icon icon={faArrowRotateRight} />
       <Text>이 지역 재검색</Text>
     </Button>

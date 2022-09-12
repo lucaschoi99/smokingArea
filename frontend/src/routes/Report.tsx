@@ -4,9 +4,9 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Webcam from "react-webcam";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
-import { isCoordsAvailableState, loggedInState } from "../atoms";
+import { isCoordsAvailableState, loggedInState, myCoordsState } from "../atoms";
 import CameraFlipBtn from "../components/CameraFlipBtn";
 import CaptureBtn from "../components/CaptureBtn";
 import ConfirmReport from "../components/ConfirmReport";
@@ -64,7 +64,10 @@ const Icon = styled(FontAwesomeIcon)`
 
 const Report = () => {
   const isLoggedIn = useRecoilValue(loggedInState);
-  const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
+  const [isCoordsAvailable, setIsCoordsAvailable] = useRecoilState(
+    isCoordsAvailableState
+  );
+  const setMyCoords = useSetRecoilState(myCoordsState);
   const cameraRef = useRef<Webcam>(null);
   const [isUserMode, setIsUserMode] = useState<boolean>(true);
   const [isCaptured, setIsCaptured] = useState<boolean>(false);
@@ -91,20 +94,27 @@ const Report = () => {
 
   // 로그인, 위치 정보 동의 확인.
   useEffect(() => {
-    // if (!isLoggedIn) return navigate("/login");
-    console.log("hello!");
+    // if (!isLoggedIn) return navigate("/login", { replace: true });
 
     // 위치 정보 제공 동의하지 않은 경우
     if (!isCoordsAvailable) {
       // 위치 정보 제공 동의 구하기.
       if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          () => {},
+        // 유저의 현재 위치를 watch.
+        navigator.geolocation.watchPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+            setMyCoords({ lat: latitude, lng: longitude });
+            setIsCoordsAvailable(true);
+          },
           (error) => {
             // 동의하지 않았을 경우
             navigate("/");
           }
         );
+      } else {
+        /* 위치정보 사용 불가능 */
+        navigate("/");
       }
     }
   }, []);
@@ -116,6 +126,7 @@ const Report = () => {
         onUserMediaError={onUserMediaError}
         videoConstraints={{ facingMode: isUserMode ? "user" : "environment" }}
         mirrored={isUserMode}
+        screenshotFormat={"image/jpeg"}
       />
       <BackBtn onClick={onBackBtnClick}>
         <Icon icon={faArrowLeft} />

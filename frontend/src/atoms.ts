@@ -11,6 +11,18 @@ export interface ICoords {
   lng: number;
 }
 
+export interface ISmokingAreaPreview {
+  title: string;
+  coords: ICoords;
+  id: string;
+}
+
+export interface ISmokingAreaDetail {
+  title: string;
+  coords: ICoords;
+  id: string;
+}
+
 export const isDarkTheme = atom<boolean>({
   key: "isDarkTheme",
   default: false,
@@ -21,9 +33,9 @@ export const isCoordsAvailableState = atom<boolean>({
   default: false,
 });
 
-export const myCoordsState = atom<ICoords | undefined>({
+export const myCoordsState = atom<ICoords>({
   key: "myCoordsState",
-  default: undefined,
+  default: defaultCoords,
 });
 
 export const mapCenterState = atom<ICoords>({
@@ -36,17 +48,27 @@ export const boundsChangedState = atom<boolean>({
   default: false,
 });
 
-export const mapNorthEastState = atom<ICoords | undefined>({
+export const mapNorthEastState = atom<ICoords>({
   key: "mapNorthEastState",
-  default: undefined,
+  default: defaultCoords,
 });
 
-export const mapSouthWestState = atom<ICoords | undefined>({
+export const mapSouthWestState = atom<ICoords>({
   key: "mapSouthWestState",
-  default: undefined,
+  default: defaultCoords,
 });
 
 export const loggedInState = atom<boolean>({
   key: "loggedInState",
   default: false,
+});
+
+export const smokingAreasState = atom<ISmokingAreaPreview[]>({
+  key: "smokingAreasState",
+  default: [],
+});
+
+export const selectedState = atom<ISmokingAreaPreview | null>({
+  key: "selectedState",
+  default: null,
 });

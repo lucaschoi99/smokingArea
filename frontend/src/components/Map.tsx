@@ -4,16 +4,24 @@ import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import styled from "styled-components";
 import {
   boundsChangedState,
+  isCoordsAvailableState,
+  ISmokingAreaPreview,
   mapCenterState,
   mapNorthEastState,
   mapSouthWestState,
   myCoordsState,
+  selectedState,
+  smokingAreasState,
 } from "../atoms";
 import MyLocationBtn from "./MyLocationBtn";
 import myMarker from "../images/myMarker.svg";
-import Nav from "./Nav";
+import marker from "../images/marker.svg";
+import dotMarker from "../images/dotMarker.svg";
+import NavBar from "./NavBar";
 import ReSearchBtn from "./ReSearchBtn";
 import { fetchSmokingAreas } from "../apis";
+import AreaDetail from "./AreaDetail";
+import { AnimatePresence } from "framer-motion";
 
 const KakaoMap = styled(RawMap)`
   width: 100%;
@@ -22,7 +30,7 @@ const KakaoMap = styled(RawMap)`
   z-index: 0;
 `;
 
-const NavWrapper = styled.div`
+const NavBarWrapper = styled.div`
   position: absolute;
   bottom: 30px;
   left: 0;
@@ -40,22 +48,26 @@ const MyLocationBtnWrapper = styled.div`
   border-radius: 25px;
 `;
 
-const ReSearchBtnWrapper = styled.div`
+const TopNavWrapper = styled.div`
   position: absolute;
   top: 40px;
   left: 0;
   right: 0;
   margin: 0 auto;
-  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const Map = () => {
   const [map, setMap] = useState<kakao.maps.Map | null>(null);
   const [mapCenter, setMapcenter] = useRecoilState(mapCenterState);
-  const myCoords = useRecoilValue(myCoordsState);
-
   const [isBoundsChanged, setIsBoundsChanged] =
     useRecoilState(boundsChangedState);
+  const [smokingAreas, setSmokingAreas] = useRecoilState(smokingAreasState);
+  const [selectedMarker, setSelectedMarker] = useRecoilState(selectedState);
+  const isCoordsAvailable = useRecoilValue(isCoordsAvailableState);
+  const myCoords = useRecoilValue(myCoordsState);
   const setNorthEastCoords = useSetRecoilState(mapNorthEastState);
   const setSouthWestCoords = useSetRecoilState(mapSouthWestState);
 
@@ -66,43 +78,71 @@ const Map = () => {
     });
   };
 
-  const onMapBoundsChanged = (map: kakao.maps.Map) => {
+  const getBoundsCoords = (map: kakao.maps.Map) => {
     const northEast = map.getBounds().getNorthEast();
     const southWest = map.getBounds().getSouthWest();
-    setNorthEastCoords({
+    const northEastCoords = {
       lat: northEast.getLat(),
       lng: northEast.getLng(),
-    });
-    setSouthWestCoords({
+    };
+    const southWestCoords = {
       lat: southWest.getLat(),
       lng: southWest.getLng(),
-    });
+    };
+    return {
+      northEastCoords,
+      southWestCoords,
+    };
+  };
+
+  const onMapBoundsChanged = (map: kakao.maps.Map) => {
+    const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+    setNorthEastCoords(northEastCoords);
+    setSouthWestCoords(southWestCoords);
     setIsBoundsChanged(true);
   };
 
+  const onMarkerClick = (area: ISmokingAreaPreview) => {
+    setSelectedMarker(area);
+    setMapcenter(area.coords);
+  };
+
+  // default 위치에서 smoking area를 fetch.
   useEffect(() => {
-    if (map) {
-      const northEast = map.getBounds().getNorthEast();
-      const southWest = map.getBounds().getSouthWest();
-      // fetchSmokingAreas(
-      //   {
-      //     lat: northEast.getLat(),
-      //     lng: northEast.getLng(),
-      //   },
-      //   { lat: southWest.getLat(), lng: southWest.getLng() }
-      // );
+    if (!!map) {
+      const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+      (async () => {
+        const result = await fetchSmokingAreas(
+          northEastCoords,
+          southWestCoords
+        );
+        if (!result.isError && !!result?.data) {
+          setSmokingAreas(result.data);
+        }
+      })();
     }
   }, [map]);
+
+  // 맵 중심이 바뀔 때 Bounds를 재설정.
+  useEffect(() => {
+    if (!!map) {
+      const { northEastCoords, southWestCoords } = getBoundsCoords(map);
+      setNorthEastCoords(northEastCoords);
+      setSouthWestCoords(southWestCoords);
+    }
+  }, [map, mapCenter]);
 
   return (
     <KakaoMap
       ref={setMap}
       center={mapCenter}
+      isPanto={true}
       level={3}
       onDragEnd={onMapDragEnd}
       onBoundsChanged={onMapBoundsChanged}
+      onClick={() => setSelectedMarker(null)}
     >
-      {!!myCoords && ( // MyMarker
+      {isCoordsAvailable && ( // MyMarker
         <MapMarker
           position={myCoords}
           image={{
@@ -120,17 +160,31 @@ const Map = () => {
           }}
         />
       )}
-      <NavWrapper>
-        <Nav />
-      </NavWrapper>
+      {smokingAreas.map((area) => (
+        <MapMarker
+          key={area.id}
+          position={area.coords} // 마커를 표시할 위치
+          title={area.title} // 마커의 타이틀, 마커에 마우스를 올리면 타이틀이 표시됩니다
+          onClick={() => onMarkerClick(area)}
+          image={{
+            src: selectedMarker?.id === area.id ? dotMarker : marker,
+            size: {
+              width: selectedMarker?.id === area.id ? 40 : 25,
+              height: selectedMarker?.id === area.id ? 40 : 25,
+            },
+          }}
+        />
+      ))}
+      <TopNavWrapper>
+        <AnimatePresence>{!!selectedMarker && <AreaDetail />}</AnimatePresence>
+        {isBoundsChanged && <ReSearchBtn />}
+      </TopNavWrapper>
+      <NavBarWrapper>
+        <NavBar />
+      </NavBarWrapper>
       <MyLocationBtnWrapper>
         <MyLocationBtn />
       </MyLocationBtnWrapper>
-      {isBoundsChanged && (
-        <ReSearchBtnWrapper>
-          <ReSearchBtn />
-        </ReSearchBtnWrapper>
-      )}
     </KakaoMap>
   );
 };
