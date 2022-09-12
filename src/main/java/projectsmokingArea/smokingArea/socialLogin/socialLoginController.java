@@ -62,7 +62,7 @@ public class socialLoginController {
 
         KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(token);
         System.out.println("kakaoProfile = " + kakaoProfile);
-//        mav.setViewName("");
+        mav.setViewName("user/social/redirectKakao");
         return mav;
     }
 }
