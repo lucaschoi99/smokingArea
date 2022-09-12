@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import projectsmokingArea.smokingArea.domain.Users;
 import projectsmokingArea.smokingArea.socialLogin.exception.CCommunicationException;
 
 import java.io.*;
@@ -24,6 +25,7 @@ public class KakaoService {
     private final RestTemplate restTemplate;
     private final Environment env;
     private final Gson gson;
+    private final UserRepository userRepository;
 
     @Value("${spring.url.base}")
     private String baseUrl;
@@ -33,6 +35,24 @@ public class KakaoService {
 
     @Value("${spring.social.kakao.redirect}")
     private String kakaoRedirect;
+
+    // Kakao Profile 등록
+    // UserRepository에 존재 -> session
+    public Users checkUser(String email) {
+
+        if (userRepository.findUserByEmail(email) != null) {
+            // Spring session 이용해서 처리
+
+
+        }
+        // Kakao Profile 등록
+
+
+
+    }
+
+
+
 
     public KakaoProfile getKakaoProfile(String accessToken) {
         // Set header : Content-type: application/x-www-form-urlencoded

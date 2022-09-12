@@ -14,7 +14,7 @@ public class Users {
 
     @Id // pk
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long msrl;
+    private long id;
 
     @Column(nullable = false, unique = true, length = 50)
     private String uid;
@@ -28,4 +28,7 @@ public class Users {
 
     @Column(length = 100)
     private String provider;
+
+    @Column
+    private Boolean snsLogin;
 }
