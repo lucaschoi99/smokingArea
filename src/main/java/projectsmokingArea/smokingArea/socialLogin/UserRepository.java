@@ -3,6 +3,7 @@ package projectsmokingArea.smokingArea.socialLogin;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import projectsmokingArea.smokingArea.domain.Users;
+import projectsmokingArea.smokingArea.repository.UserRepositoryInterface;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
-public class UserRepository {
+public class UserRepository implements UserRepositoryInterface {
 
     private final EntityManager em;
 
@@ -21,8 +22,11 @@ public class UserRepository {
     }
 
     // 멤버 단건 조회
-    public Users findUserByEmail(String email) {
-        return em.find(Users.class, email);
+    public Optional<Users> findUserByEmail(String email) {
+        return findAll().stream()
+                .filter(m -> m.getEmail().equals(email))
+                .findFirst();
+//        return em.find(Users.class, email);
     }
 
     // 멤버 모두 조회
