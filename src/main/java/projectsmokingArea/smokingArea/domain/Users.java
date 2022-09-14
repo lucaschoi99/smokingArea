@@ -9,26 +9,30 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "Users")
 @Getter @Setter
 public class Users {
 
     @Id // pk
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @Column(name = "uid", nullable = false, unique = true, length = 50)
     private String uid;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(length = 100)
+    @Column(name = "password", length = 100)
     private String password;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100)
     private String name;
 
-    @Column(length = 100)
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "provider", length = 100)
     private String provider;
 
-    @Column
+    @Column(name = "snsLogin")
     private Boolean snsLogin;
 }

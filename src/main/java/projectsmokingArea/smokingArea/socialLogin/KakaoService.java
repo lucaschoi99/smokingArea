@@ -4,10 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -17,8 +21,12 @@ import projectsmokingArea.smokingArea.socialLogin.exception.CCommunicationExcept
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class KakaoService {
 
@@ -36,6 +44,7 @@ public class KakaoService {
     @Value("${spring.social.kakao.redirect}")
     private String kakaoRedirect;
 
+    /*
     // Kakao Profile 등록
     // UserRepository에 존재 -> session
     public Users checkUser(String email) {
@@ -50,7 +59,81 @@ public class KakaoService {
 
 
     }
+    */
 
+    // UserRepository에 User 저장
+    public void saveUsers(Map<String, Object> userInfo) {
+        String email = userInfo.get("email").toString();
+        Optional<Users> userByEmail = userRepository.findUserByEmail(email);
+
+        if (!userByEmail.isPresent()) { // 최초 등록
+            Users newUser = new Users();
+            newUser.setUid(userInfo.get("id").toString());
+            newUser.setEmail(email);
+            newUser.setName("Default: name");
+            newUser.setProvider("kakao");
+            newUser.setSnsLogin(true);
+            userRepository.save(newUser);
+
+        }else{ // sns login 정보 업데이트
+            userByEmail.get().setSnsLogin(true);
+            userByEmail.get().setProvider("kakao");
+        }
+    }
+
+
+
+    public Map<String, Object> getUserInfo(String access_token) throws IOException {
+        String host = "https://kapi.kakao.com/v2/user/me";
+        Map<String, Object> result = new HashMap<>();
+        try {
+            URL url = new URL(host);
+
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setRequestProperty("Authorization", "Bearer " + access_token);
+            urlConnection.setRequestMethod("GET");
+
+            int responseCode = urlConnection.getResponseCode();
+            System.out.println("responseCode = " + responseCode);
+
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+            String line = "";
+            String res = "";
+            while ((line = br.readLine()) != null) {
+                res += line;
+            }
+
+            System.out.println("res = " + res);
+
+
+            JSONParser parser = new JSONParser();
+            JSONObject obj = (JSONObject) parser.parse(res);
+            JSONObject kakao_account = (JSONObject) obj.get("kakao_account");
+            JSONObject properties = (JSONObject) obj.get("properties");
+
+
+            String id = obj.get("id").toString();
+//            String nickname = properties.get("nickname").toString();
+//            String age_range = kakao_account.get("age_range").toString();
+            String email = kakao_account.get("email").toString();
+//            String name = kakao_account.get("nickname").toString();
+
+            result.put("id", id);
+//            result.put("nickname", nickname);
+//            result.put("age_range", age_range);
+            result.put("email", email);
+//            result.put("nickname", name);
+
+            br.close();
+
+
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
 
 
 
