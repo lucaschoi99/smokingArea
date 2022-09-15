@@ -1,29 +1,31 @@
 package projectsmokingArea.smokingArea.db;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
 public class dbController {
-
+//
     private final addDBService service;
 
+
     @GetMapping("/addExcel")
-    public String getExcel() {
-        
+    public void getExcel() throws IOException, InvalidFormatException {
+        service.insertDB("/Users/choi/Desktop/smokingArea-project/smokingArea/위경도데이터.xlsx");
     }
 
+//
+//    @PostMapping(value = "/addExcel")
+//    public ResponseEntity<? extends BasicResponse> addExcel(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
+//        return ResponseEntity.ok().body(service.addExcel(file));
+//    };
 
-    @PostMapping(value = "/addExcel")
-    public ResponseEntity<? extends BasicResponse> addExcel(HttpServletRequest request, HttpServletResponse response, MultipartFile file) {
-        return ResponseEntity.ok().body(service.addExcel(file));
-    };
+
+
+
 }
