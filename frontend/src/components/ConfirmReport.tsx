@@ -94,37 +94,44 @@ const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
     setIsCaptured(false);
   };
 
-  const checkMobile = () => {
-    var varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
-    if (varUA.indexOf("android") > -1) {
-      //안드로이드
-      return "android";
-    } else if (
-      varUA.indexOf("iphone") > -1 ||
-      varUA.indexOf("ipad") > -1 ||
-      varUA.indexOf("ipod") > -1
-    ) {
-      //IOS
-      return "ios";
-    } else {
-      //아이폰, 안드로이드 외
-      return "other";
-    }
-  };
+  // const checkMobile = () => {
+  //   const varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
 
-  const onSend = () => {
-    const userOS = checkMobile();
-    const seperator = userOS === "ios" ? "&" : "?";
+  //   if (varUA.indexOf("android") > -1) {
+  //     // 안드로이드
+  //     return "android";
+  //   } else if (
+  //     varUA.indexOf("iphone") > -1 ||
+  //     varUA.indexOf("ipad") > -1 ||
+  //     varUA.indexOf("ipod") > -1 ||
+  //     varUA.indexOf("ios") > -1
+  //   ) {
+  //     // IOS
+  //     return "ios";
+  //   } else {
+  //     // IOS, 안드로이드 외
+  //     return "other";
+  //   }
+  // };
+
+  const onSend = async () => {
+    // const userOS = checkMobile();
+    // const seperator = userOS === "ios" ? "&" : "?";
     // const seperator = "&";
-    // const number = "01072406596";  // 최민수
+    // const number = "01072406596"; // 최민수
     // const number = "01039548009";  // 윤태호
     // const number = "01064390213";  // 이지흠
-    const number = "01067007241"; // 송동준
-    const iuImage =
-      "https://cphoto.asiae.co.kr/listimglink/6/2022062016015219931_1655708512.jpg";
-    const href = `sms:${number}${seperator}body=${capturedSrc}`;
+    // const number = "01067007241"; // 송동준
+    // const iuImage =
+    //   "https://cphoto.asiae.co.kr/listimglink/6/2022062016015219931_1655708512.jpg";
+    // const href = `sms:${number}${seperator}body=${capturedSrc}`;
+    // const href = `sms:${number}?&body=${capturedSrc}`;
+    // const href = `mailto:pln0302@yonsei.ac.kr?&body=${capturedSrc}`;
+    // const href = `mms:${number}?&body=hello`;
     const aTag = document.createElement("a");
+    const href = capturedSrc;
     aTag.href = href;
+    aTag.download = "report.jpeg";
     console.log(aTag);
     aTag.click();
   };
