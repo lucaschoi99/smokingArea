@@ -40,13 +40,13 @@ const StarsNumber = styled.span``;
 const Address = styled.span``;
 
 const NavigateBtn = styled.button`
-  width: 45px;
-  height: 45px;
+  width: 43px;
+  height: 43px;
   border-radius: 50%;
   border: none;
   background-color: ${(props) => props.theme.colors.kakaoBlue};
   color: ${(props) => props.theme.bgColor};
-  padding: 10px;
+  padding: 9px;
 `;
 
 const NavigateIcon = styled(FontAwesomeIcon)`
