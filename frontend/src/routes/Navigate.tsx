@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { fetchNearest } from "../apis";
 import { ICoords, isCoordsAvailableState, myCoordsState } from "../atoms";
 
-interface ILocState {
+export interface ILocState {
   destinationCoords: ICoords;
   destinationName: string;
 }

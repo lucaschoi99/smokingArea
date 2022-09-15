@@ -1,4 +1,4 @@
-import { ICoords, ISmokingAreaPreview } from "./atoms";
+import { ICoords, ISmokingAreaDetail, ISmokingAreaPreview } from "./atoms";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
@@ -70,6 +70,30 @@ export const fetchNearest = async (myCoords: ICoords) => {
     const data = (await response.json()) as ISmokingAreaPreview;
 
     return { isError: false, data };
+  } catch (error) {
+    console.log(error);
+    return { isError: true };
+  }
+};
+
+export const fetchAreaDetail = async (id: string) => {
+  if (id === "") return { isError: true };
+  try {
+    const response = await fetch(`${API_URL}/markers/${id}`, {
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      return { isError: true };
+    }
+
+    const areaDetail = (await response.json()) as ISmokingAreaDetail;
+
+    return { isError: false, areaDetail };
   } catch (error) {
     console.log(error);
     return { isError: true };
