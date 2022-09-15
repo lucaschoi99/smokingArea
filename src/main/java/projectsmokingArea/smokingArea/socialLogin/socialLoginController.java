@@ -9,6 +9,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
@@ -16,6 +17,8 @@ import org.springframework.web.servlet.ModelAndView;
 import projectsmokingArea.smokingArea.domain.Users;
 import projectsmokingArea.smokingArea.socialLogin.KakaoService;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
@@ -62,7 +65,7 @@ public class socialLoginController {
 
     // Code -> Token & Get userInfo
     @GetMapping("/finish")
-    public String getCI(@RequestParam String code, Model model) throws IOException {
+    public String getCI(@RequestParam String code, Model model, HttpServletRequest request) throws IOException {
         System.out.println("code = " + code);
         String access_token = kakaoService.getKakaoTokenInfo(code);
         Map<String, Object> userInfo = kakaoService.getUserInfo(access_token);
@@ -72,28 +75,15 @@ public class socialLoginController {
         model.addAttribute("userInfo", userInfo);
 
         // UserRepository 저장
-        kakaoService.saveUsers(userInfo);
+        Users loginUser = kakaoService.saveUsers(userInfo);
 
-        // 로그인 된 페이지로 이동 (Logout 버튼 등)
-        return "redirect:/";
+        // Session에 저장
+        //세션이 있으면 있는 세션 반환, 없으면 신규 세션 생성
+        HttpSession session = request.getSession(); //세션에 로그인 회원 정보 보관
+        session.setAttribute("loginUser", loginUser);
+
+        // 홈으로 이동 (Logout 버튼 등이 있는)
+        return "redirect:/nice";
     }
 
-
-
-    //
-//    /**
-//     * 카카오 인증 완료 후 리다이렉트 화면
-//     */
-//    @GetMapping(value = "/finish")
-//    public ModelAndView redirectKakao(ModelAndView mav, @RequestParam String code) {
-//        mav.addObject("authInfo", kakaoService.getKakaoTokenInfo(code));
-//        String token = mav.getModel().get("authInfo").toString();
-//        System.out.println("token = " + token);
-//
-//        KakaoProfile kakaoProfile = kakaoService.getKakaoProfile(token);
-//        System.out.println("kakaoProfile = " + kakaoProfile);
-//        mav.setViewName("user/social/redirectKakao");
-//        return mav;
-//    }
-//
 }

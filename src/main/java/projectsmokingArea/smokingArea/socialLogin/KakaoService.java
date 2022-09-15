@@ -44,43 +44,38 @@ public class KakaoService {
     @Value("${spring.social.kakao.redirect}")
     private String kakaoRedirect;
 
-    /*
-    // Kakao Profile 등록
-    // UserRepository에 존재 -> session
-    public Users checkUser(String email) {
-
-        if (userRepository.findUserByEmail(email) != null) {
-            // Spring session 이용해서 처리
-
-
-        }
-        // Kakao Profile 등록
-
-
-
-    }
-    */
 
     // UserRepository에 User 저장
-    public void saveUsers(Map<String, Object> userInfo) {
+    public Users saveUsers(Map<String, Object> userInfo) {
         String email = userInfo.get("email").toString();
         Optional<Users> userByEmail = userRepository.findUserByEmail(email);
 
         if (!userByEmail.isPresent()) { // 최초 등록
-            Users newUser = new Users();
-            newUser.setUid(userInfo.get("id").toString());
-            newUser.setEmail(email);
-            newUser.setName("Default: name");
-            newUser.setProvider("kakao");
-            newUser.setSnsLogin(true);
+            Users newUser = saveFirstUsers(userInfo, email);
             userRepository.save(newUser);
+            return newUser;
 
         }else{ // sns login 정보 업데이트
-            userByEmail.get().setSnsLogin(true);
-            userByEmail.get().setProvider("kakao");
+            updateUserInfo(userByEmail);
+            return userByEmail.get();
         }
     }
 
+    private void updateUserInfo(Optional<Users> userByEmail) {
+        userByEmail.get().setSnsLogin(true);
+        userByEmail.get().setProvider("kakao");
+    }
+
+    private Users saveFirstUsers(Map<String, Object> userInfo, String email) {
+        Users newUser = new Users();
+        newUser.setUid(userInfo.get("id").toString());
+        newUser.setEmail(email);
+//        newUser.setName(userInfo.get("phone_number").toString());
+        newUser.setName("default: NAME");
+        newUser.setProvider("kakao");
+        newUser.setSnsLogin(true);
+        return newUser;
+    }
 
 
     public Map<String, Object> getUserInfo(String access_token) throws IOException {
@@ -135,26 +130,6 @@ public class KakaoService {
         return result;
     }
 
-
-
-    public KakaoProfile getKakaoProfile(String accessToken) {
-        // Set header : Content-type: application/x-www-form-urlencoded
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.set("Authorization", "Bearer " + accessToken);
-
-        // Set http entity
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(null, headers);
-        try {
-            // Request profile
-            ResponseEntity<String> response = restTemplate.postForEntity(env.getProperty("spring.social.kakao.url.profile"), request, String.class);
-            if (response.getStatusCode() == HttpStatus.OK)
-                return gson.fromJson(response.getBody(), KakaoProfile.class);
-        } catch (Exception e) {
-            throw new CCommunicationException();
-        }
-        throw new CCommunicationException();
-    }
 
     public String getKakaoTokenInfo(String code) {
         String access_Token = "";
@@ -213,25 +188,4 @@ public class KakaoService {
         return access_Token;
     }
 
-//    public RetKakaoAuth getKakaoTokenInfo(String code) {
-//        System.out.println("code = " + code);
-//
-//        // Set header : Content-type: application/x-www-form-urlencoded
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-//        // Set parameter
-//        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-//        params.add("grant_type", "authorization_code");
-//        params.add("client_id", kakaoClientId);
-//        params.add("redirect_uri", baseUrl + kakaoRedirect);
-//        params.add("code", code);
-//
-//        // Set http entity
-//        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
-//        ResponseEntity<String> response = restTemplate.postForEntity(env.getProperty("spring.social.kakao.url.token"), request, String.class);
-//        if (response.getStatusCode() == HttpStatus.OK) {
-//            return gson.fromJson(response.getBody(), RetKakaoAuth.class);
-//        }
-//        return null;
-//    }
 }
