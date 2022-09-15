@@ -15,4 +15,5 @@ public class SmokingAreaApplication {
 	@Bean
 	public RestTemplate getRestTemplate() { return new RestTemplate(); }
 
+
 }
