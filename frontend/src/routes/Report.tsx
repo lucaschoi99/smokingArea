@@ -89,7 +89,7 @@ const Report = () => {
   };
 
   const onBackBtnClick = () => {
-    navigate(-1);
+    navigate("/");
   };
 
   // 로그인, 위치 정보 동의 확인.
