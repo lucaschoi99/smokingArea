@@ -1,7 +1,9 @@
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { myCoordsState } from "../atoms";
 
 const Wrapper = styled(motion.aside)`
   position: fixed;
@@ -90,50 +92,44 @@ interface IProps {
 }
 
 const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
+  const myCoords = useRecoilValue(myCoordsState);
+
   const onCancel = () => {
     setIsCaptured(false);
   };
 
-  // const checkMobile = () => {
-  //   const varUA = navigator.userAgent.toLowerCase(); //userAgent 값 얻기
+  const downloadPhoto = () => {
+    const aTag = document.createElement("a");
+    aTag.href = capturedSrc;
+    aTag.download = "report.jpeg";
+    aTag.click();
+  };
 
-  //   if (varUA.indexOf("android") > -1) {
-  //     // 안드로이드
-  //     return "android";
-  //   } else if (
-  //     varUA.indexOf("iphone") > -1 ||
-  //     varUA.indexOf("ipad") > -1 ||
-  //     varUA.indexOf("ipod") > -1 ||
-  //     varUA.indexOf("ios") > -1
-  //   ) {
-  //     // IOS
-  //     return "ios";
-  //   } else {
-  //     // IOS, 안드로이드 외
-  //     return "other";
-  //   }
-  // };
+  const goToMessage = () => {
+    const aTag = document.createElement("a");
+    const base = "금연구역에서 흡연하는 사람을 발견하여 신고합니다.";
+
+    // 좌표를 주소로 변환하여 body에 반영
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(myCoords.lng, myCoords.lat, (result, status) => {
+      if (status === kakao.maps.services.Status.OK) {
+        let detailAddr = !!result[0].road_address
+          ? `도로명주소: ${result[0].road_address.address_name}\n`
+          : "";
+        detailAddr += `지번주소: ${result[0].address.address_name}`;
+        // const coords = `위경도: (${myCoords.lat}, ${myCoords.lng})`;
+        const location = `<위치>\n${detailAddr}`;
+
+        const body = encodeURI(`${base}\n${location}`);
+        aTag.href = `sms:01072406596?&body=${body}`;
+        aTag.click();
+      }
+    });
+  };
 
   const onSend = async () => {
-    // const userOS = checkMobile();
-    // const seperator = userOS === "ios" ? "&" : "?";
-    // const seperator = "&";
-    // const number = "01072406596"; // 최민수
-    // const number = "01039548009";  // 윤태호
-    // const number = "01064390213";  // 이지흠
-    // const number = "01067007241"; // 송동준
-    // const iuImage =
-    //   "https://cphoto.asiae.co.kr/listimglink/6/2022062016015219931_1655708512.jpg";
-    // const href = `sms:${number}${seperator}body=${capturedSrc}`;
-    // const href = `sms:${number}?&body=${capturedSrc}`;
-    // const href = `mailto:pln0302@yonsei.ac.kr?&body=${capturedSrc}`;
-    // const href = `mms:${number}?&body=hello`;
-    const aTag = document.createElement("a");
-    const href = capturedSrc;
-    aTag.href = href;
-    aTag.download = "report.jpeg";
-    console.log(aTag);
-    aTag.click();
+    downloadPhoto();
+    goToMessage();
   };
 
   return (

@@ -121,13 +121,15 @@ const Report = () => {
 
   return (
     <Wrapper>
-      <Camera
-        ref={cameraRef}
-        onUserMediaError={onUserMediaError}
-        videoConstraints={{ facingMode: isUserMode ? "user" : "environment" }}
-        mirrored={isUserMode}
-        screenshotFormat={"image/jpeg"}
-      />
+      {!isCaptured && (
+        <Camera
+          ref={cameraRef}
+          onUserMediaError={onUserMediaError}
+          videoConstraints={{ facingMode: isUserMode ? "user" : "environment" }}
+          mirrored={isUserMode}
+          screenshotFormat={"image/jpeg"}
+        />
+      )}
       <BackBtn onClick={onBackBtnClick}>
         <Icon icon={faArrowLeft} />
       </BackBtn>
