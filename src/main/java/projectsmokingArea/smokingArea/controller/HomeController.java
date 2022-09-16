@@ -11,12 +11,12 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
-
-    @GetMapping("/login")
-    public void loginPage() {
-        // 카카오 로그인 버튼 누르면 redirect
+//
+//    @GetMapping("http://localhost:3000/user/social/kakao/start")
+//    public void loginPage() {
+//        // 카카오 로그인 버튼 누르면 redirect
 //        return "redirect:/user/social/kakao";
-    }
+//    }
 
 
     @PostMapping("/logout")
@@ -29,32 +29,26 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public void homeLogin(HttpServletRequest request, Model model) {
+    public String  homeLogin(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
         if (session == null) {
-//            return "login";
             System.out.println("No session found!");
-            return;
+            return "redirect:localhost:3000/login";
         }
 
         Users loginUser = (Users)session.getAttribute("loginUser");
 
         // Session에 회원 데이터가 없으면 home
         if (loginUser == null) {
-//            return "login";
             System.out.println("No user data in Session!");
-            return;
+            return "redirect:localhost:3000/login";
         }
 
         // Session 유지되면 로그인 이동
         model.addAttribute("user", loginUser);
         System.out.println("Session Exists: " + loginUser.getEmail());
-//        return "redirect:/";
-        return;
-
-
-
+        return "locahost:3000/";
     }
 
 
