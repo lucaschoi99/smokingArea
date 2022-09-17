@@ -36,3 +36,8 @@ communicationError:
 
 logging.level:
   org.hibernate.SQL: trace
+
+server:
+  servlet:
+    session:
+      tracking-modes: cookie

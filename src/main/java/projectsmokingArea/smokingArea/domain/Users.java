@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "Users")
@@ -23,9 +21,6 @@ public class Users {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name = "password", length = 100)
     private String password;
-
-    @Column(name = "name", nullable = false, length = 100)
-    private String name;
 
     @Column(name = "email")
     private String email;
