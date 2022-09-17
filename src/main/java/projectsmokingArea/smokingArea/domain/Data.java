@@ -14,11 +14,11 @@ public class Data {
     @GeneratedValue
     private long id;
 
-    @Column(name = "xCoord")
-    private Double xCoord;
+    @Column(name = "xCoords")
+    private Double xCoords;
 
-    @Column(name = "yCoord")
-    private Double yCoord;
+    @Column(name = "yCoords")
+    private Double yCoords;
 
     @Column(name = "place")
     private String place;

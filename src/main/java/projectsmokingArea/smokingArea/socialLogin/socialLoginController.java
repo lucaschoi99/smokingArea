@@ -2,26 +2,21 @@ package projectsmokingArea.smokingArea.socialLogin;
 
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import org.apache.naming.factory.SendMailFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import projectsmokingArea.smokingArea.domain.Users;
-import projectsmokingArea.smokingArea.socialLogin.KakaoService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Map;
-import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -49,7 +44,7 @@ public class socialLoginController {
     /**
      * 카카오 로그인
      */
-    @GetMapping
+    @GetMapping("/start")
     public ModelAndView socialLogin(ModelAndView mav) {
         StringBuilder loginUrl = new StringBuilder()
                 .append(env.getProperty("spring.social.kakao.url.login"))
@@ -83,7 +78,7 @@ public class socialLoginController {
         session.setAttribute("loginUser", loginUser);
 
         // 홈으로 이동 (Logout 버튼 등이 있는)
-        return "redirect:/nice";
+        return "redirect:http://localhost:3000/";
     }
 
 }

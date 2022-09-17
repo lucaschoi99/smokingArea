@@ -30,5 +30,15 @@ public class DataRepository {
                 .getResultList();
     }
 
+    // 위경도 데이터로 조회
+    public List<Data> findByLongLat(Double northEastLat, Double northEastLng, Double southWestLat, Double southWestLng) {
+        return em.createQuery("select d from Data d where d.xCoords >= :swlat and d.xCoords <= :nelat and d.yCoords >= :swlng and d.yCoords <= :nelng", Data.class)
+                .setParameter("swlat", southWestLat)
+                .setParameter("nelat", northEastLat)
+                .setParameter("swlng", southWestLng)
+                .setParameter("nelng", northEastLng)
+                .getResultList();
+    }
+
 
 }
