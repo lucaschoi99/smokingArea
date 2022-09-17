@@ -67,8 +67,6 @@ public class KakaoService {
         Users newUser = new Users();
         newUser.setUid(userInfo.get("id").toString());
         newUser.setEmail(email);
-//        newUser.setName(userInfo.get("phone_number").toString());
-        newUser.setName("default: NAME");
         newUser.setProvider("kakao");
         newUser.setSnsLogin(true);
         return newUser;
