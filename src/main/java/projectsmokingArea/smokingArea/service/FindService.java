@@ -39,7 +39,38 @@ public class FindService {
     }
 
 
+    public ISmokingAreaPreview calDist(String myLat, String myLng) {
 
+        List<Data> allData = dataRepository.findAll();
+        ISmokingAreaPreview result = new ISmokingAreaPreview();
+        Double minVal = 987654321.0;
 
+        for (Data data : allData) {
+            // Euclidean distance
+            Double x = Math.abs(data.getXCoords() - Double.parseDouble(myLat));
+            Double y = Math.abs(data.getYCoords() - Double.parseDouble(myLng));
+            Double cal = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+            if (minVal > cal) {
+                minVal = cal;
+                ISmokingAreaPreview resultData = new ISmokingAreaPreview();
+                setInfos(data, resultData);
+                result = resultData;
+            }
+        }
+        return result;
+    }
 
+    public ISmokingAreaPreview findDetail(String id) {
+
+        ISmokingAreaPreview result = new ISmokingAreaPreview();
+
+        Data dataById = dataRepository.findDataById(Long.parseLong(id));
+        if (dataById != null) {
+            setInfos(dataById, result);
+        }
+
+        System.out.println("result = " + result.getTitle());
+        return result;
+
+    }
 }
