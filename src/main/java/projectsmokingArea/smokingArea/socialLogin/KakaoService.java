@@ -9,14 +9,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import projectsmokingArea.smokingArea.domain.Users;
-import projectsmokingArea.smokingArea.socialLogin.exception.CCommunicationException;
+import projectsmokingArea.smokingArea.repository.UserRepository;
 
 import java.io.*;
 import java.net.HttpURLConnection;

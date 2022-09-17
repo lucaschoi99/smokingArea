@@ -47,8 +47,8 @@ public class addDBService {
         for (SmokingInfo smokingInfo : dataInfo) {
             Data newData = new Data();
 
-            newData.setXCoord(smokingInfo.getXcoord());
-            newData.setYCoord(smokingInfo.getYcoord());
+            newData.setXCoords(smokingInfo.getXcoord());
+            newData.setYCoords(smokingInfo.getYcoord());
             newData.setPlace(smokingInfo.getPlace());
 
             dataRepository.save(newData);

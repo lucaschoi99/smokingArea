@@ -25,16 +25,16 @@ public class HomeController {
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:/";
+        return "locahost:3000/";
     }
 
     @GetMapping("/")
-    public String  homeLogin(HttpServletRequest request, Model model) {
+    public String homeLogin(HttpServletRequest request, Model model) {
 
         HttpSession session = request.getSession(false);
         if (session == null) {
             System.out.println("No session found!");
-            return "redirect:localhost:3000/login";
+            return "localhost:3000/login";
         }
 
         Users loginUser = (Users)session.getAttribute("loginUser");
@@ -42,7 +42,7 @@ public class HomeController {
         // Session에 회원 데이터가 없으면 home
         if (loginUser == null) {
             System.out.println("No user data in Session!");
-            return "redirect:localhost:3000/login";
+            return "localhost:3000/login";
         }
 
         // Session 유지되면 로그인 이동

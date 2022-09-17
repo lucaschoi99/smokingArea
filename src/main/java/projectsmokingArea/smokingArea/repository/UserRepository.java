@@ -1,9 +1,8 @@
-package projectsmokingArea.smokingArea.socialLogin;
+package projectsmokingArea.smokingArea.repository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import projectsmokingArea.smokingArea.domain.Users;
-import projectsmokingArea.smokingArea.repository.UserRepositoryInterface;
 
 import javax.persistence.EntityManager;
 import java.util.List;
