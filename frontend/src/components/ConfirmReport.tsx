@@ -3,23 +3,27 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { myCoordsState } from "../atoms";
+import { customVHState, myCoordsState } from "../atoms";
 
-const Wrapper = styled(motion.aside)`
+const Wrapper = styled(motion.aside)<{ customVH: string }>`
   position: fixed;
   top: 0;
   max-width: ${(props) => props.theme.maxWidth};
   width: 100%;
   margin: 0 auto;
+  padding: 0;
+  box-sizing: border-box;
 
-  min-height: 100vh;
+  /* min-height: 100vh;
   min-height: -moz-available;
   min-height: -webkit-fill-available;
-  min-height: fill-available;
+  min-height: fill-available; */
+  height: calc(${(props) => props.customVH} * 100);
 
   background-color: ${(props) => props.theme.bgColor};
   display: flex;
   flex-direction: column;
+  overflow-y: scroll;
 `;
 
 const Header = styled.header`
@@ -51,13 +55,16 @@ const Title = styled.h2`
 `;
 
 const Main = styled.main`
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  height: 100%;
   display: flex;
   flex-direction: column;
 `;
 
 const Image = styled.img`
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   background-color: black;
 `;
@@ -93,6 +100,7 @@ interface IProps {
 
 const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
   const myCoords = useRecoilValue(myCoordsState);
+  const customVH = useRecoilValue(customVHState);
 
   const onCancel = () => {
     setIsCaptured(false);
@@ -143,6 +151,7 @@ const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
       animate={{ y: 0 }}
       exit={{ y: "100vh" }}
       transition={{ duration: 0.5, ease: "easeInOut" }}
+      customVH={customVH}
     >
       <Header>
         <CancelBtn onClick={onCancel}>
@@ -153,7 +162,7 @@ const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
       <Main>
         <Image src={capturedSrc} />
         <NoticeText>
-          ❗️ 위 사진은 당신의 현재 위치 정보와 함께 가까운 보건소로 신고됩니다.
+          ❗️ 신고하기 버튼을 누른 후 사진을 첨부하여 전송 버튼을 누르십시오.
         </NoticeText>
       </Main>
       <Footer>

@@ -1,10 +1,11 @@
-import { useRecoilValue } from "recoil";
+import { useEffect } from "react";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { createGlobalStyle, ThemeProvider } from "styled-components";
-import { isDarkTheme } from "./atoms";
+import { customVHState, isDarkTheme } from "./atoms";
 import Router from "./Router";
 import { darkTheme, lightTheme } from "./themes";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{ customVH: string }>`
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
@@ -70,10 +71,11 @@ const GlobalStyle = createGlobalStyle`
     max-width: ${(props) => props.theme.maxWidth};
     margin: 0 auto;
 
-    min-height: 100vh;
+    /* min-height: 100vh;
     min-height: -moz-available;
     min-height: -webkit-fill-available;
-    min-height: fill-available;
+    min-height: fill-available; */
+    height: calc(${(props) => props.customVH} * 100);
 
     overflow: hidden;
 
@@ -84,11 +86,23 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
   const isDark = useRecoilValue(isDarkTheme);
+  const [customVH, setCustomVH] = useRecoilState(customVHState);
+
+  // Custom ViewPort
+  useEffect(() => {
+    const handleResize = () => {
+      const vh = window.innerHeight * 0.01;
+      setCustomVH(`${vh}px`);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <>
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-        <GlobalStyle />
+        <GlobalStyle customVH={customVH} />
         <Router />
       </ThemeProvider>
     </>

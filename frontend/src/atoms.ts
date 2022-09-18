@@ -72,3 +72,8 @@ export const selectedState = atom<ISmokingAreaPreview | null>({
   key: "selectedState",
   default: null,
 });
+
+export const customVHState = atom<string>({
+  key: "customVHState",
+  default: "1vh",
+});
