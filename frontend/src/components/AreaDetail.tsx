@@ -2,6 +2,7 @@ import { faArrowTrendUp, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
@@ -27,7 +28,11 @@ const LeftColumn = styled.div``;
 
 const RightColumn = styled.div``;
 
-const Title = styled.h3``;
+const Title = styled.h3`
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 5px;
+`;
 
 const StarsContainer = styled.div``;
 
@@ -37,7 +42,9 @@ const StarsIcon = styled(FontAwesomeIcon)``;
 
 const StarsNumber = styled.span``;
 
-const Address = styled.span``;
+const Address = styled.span`
+  font-size: 0.8em;
+`;
 
 const NavigateBtn = styled.button`
   width: 43px;
@@ -47,6 +54,7 @@ const NavigateBtn = styled.button`
   background-color: ${(props) => props.theme.colors.kakaoBlue};
   color: ${(props) => props.theme.bgColor};
   padding: 9px;
+  margin: 5px;
 `;
 
 const NavigateIcon = styled(FontAwesomeIcon)`
@@ -58,6 +66,7 @@ const NavigateIcon = styled(FontAwesomeIcon)`
 
 const AreaDetail = () => {
   const selectedArea = useRecoilValue(selectedState);
+  const [address, setAddress] = useState("");
   const navigate = useNavigate();
   const { data } = useQuery(
     ["markerDetail", selectedArea?.id],
@@ -76,6 +85,28 @@ const AreaDetail = () => {
     navigate("/navigate", { state });
   };
 
+  useEffect(() => {
+    if (!selectedArea) return;
+
+    // 좌표를 주소로 변환하여 body에 반영
+    const geocoder = new kakao.maps.services.Geocoder();
+    geocoder.coord2Address(
+      selectedArea.coords.lng,
+      selectedArea.coords.lat,
+      (result, status) => {
+        if (status === kakao.maps.services.Status.OK) {
+          let addressStr = "";
+          if (!result[0].road_address) {
+            addressStr = `${result[0].address.address_name}`;
+          } else {
+            addressStr = `${result[0].road_address.address_name}`;
+          }
+          setAddress(addressStr);
+        }
+      }
+    );
+  }, [selectedArea]);
+
   return (
     <Wrapper
       initial={{ y: "-100%", opacity: 0 }}
@@ -85,10 +116,10 @@ const AreaDetail = () => {
     >
       <LeftColumn>
         <Title>{selectedArea?.title}</Title>
-        <StarsContainer>
+        {/* <StarsContainer>
           <StarsIcon icon={faStar} />
-        </StarsContainer>
-        <Address>{!!data && !data.isError}</Address>
+        </StarsContainer> */}
+        <Address>{address}</Address>
       </LeftColumn>
       <RightColumn>
         <NavigateBtn onClick={onNavigateClick}>
