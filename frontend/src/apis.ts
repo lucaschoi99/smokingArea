@@ -41,6 +41,7 @@ export const fetchSmokingAreas = async (
   try {
     // test
     // return { isError: false, data: testMarkers };
+
     const response = await fetch(
       `${API_URL}/markers/search?northEastLat=${northEastCoords.lat}&northEastLng=${northEastCoords.lng}&southWestLat=${southWestCoords.lat}&southWestLng=${southWestCoords.lng}
     `,
@@ -52,6 +53,7 @@ export const fetchSmokingAreas = async (
         },
       }
     );
+
 
     if (!response.ok) {
       return { isError: true };
@@ -77,6 +79,7 @@ export const fetchSmokingAreas = async (
 
 export const fetchNearest = async (myCoords: ICoords) => {
   try {
+
     const response = await fetch(
       `${API_URL}/markers/nearest?myLat=${myCoords.lat}&myLng=${myCoords.lng}`,
       {
@@ -87,6 +90,7 @@ export const fetchNearest = async (myCoords: ICoords) => {
         },
       }
     );
+
 
     if (!response.ok) {
       return { isError: true };
