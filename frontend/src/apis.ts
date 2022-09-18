@@ -41,17 +41,17 @@ export const fetchSmokingAreas = async (
   try {
     // test
     // return { isError: false, data: testMarkers };
-    const response = await fetch(`${API_URL}/markers/search`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        northEastLat: northEastCoords.lat + "",
-        northEastLng: northEastCoords.lng + "",
-        southWestLat: southWestCoords.lat + "",
-        southWestLng: southWestCoords.lng + "",
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/markers/search?northEastLat=${northEastCoords.lat}&northEastLng=${northEastCoords.lng}&southWestLat=${southWestCoords.lat}&southWestLng=${southWestCoords.lng}
+    `,
+      {
+        // credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       return { isError: true };
@@ -77,15 +77,16 @@ export const fetchSmokingAreas = async (
 
 export const fetchNearest = async (myCoords: ICoords) => {
   try {
-    const response = await fetch(`${API_URL}/markers/nearest`, {
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        myLat: myCoords.lat + "",
-        myLng: myCoords.lng + "",
-      },
-    });
+    const response = await fetch(
+      `${API_URL}/markers/nearest?myLat=${myCoords.lat}&myLng=${myCoords.lng}`,
+      {
+        // credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
 
     if (!response.ok) {
       return { isError: true };
@@ -113,7 +114,7 @@ export const fetchAreaDetail = async (id: number | undefined) => {
   if (!id) return { isError: true };
   try {
     const response = await fetch(`${API_URL}/markers/${id}`, {
-      credentials: "include",
+      // credentials: "include",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
