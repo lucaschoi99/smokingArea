@@ -61,7 +61,7 @@ const AreaDetail = () => {
   const navigate = useNavigate();
   const { data } = useQuery(
     ["markerDetail", selectedArea?.id],
-    () => fetchAreaDetail(!selectedArea ? "" : selectedArea.id),
+    () => fetchAreaDetail(selectedArea?.id),
     {
       enabled: !selectedArea,
     }

@@ -102,7 +102,10 @@ const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
     const aTag = document.createElement("a");
     aTag.href = capturedSrc;
     aTag.download = "report.jpeg";
+    aTag.target = "_blank";
+    document.body.appendChild(aTag);
     aTag.click();
+    document.body.removeChild(aTag);
   };
 
   const goToMessage = () => {
@@ -122,7 +125,9 @@ const ConfirmReport = ({ capturedSrc, setIsCaptured }: IProps) => {
 
         const body = encodeURI(`${base}\n${location}`);
         aTag.href = `sms:01072406596?&body=${body}`;
+        document.body.appendChild(aTag);
         aTag.click();
+        document.body.removeChild(aTag);
       }
     });
   };

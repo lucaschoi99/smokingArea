@@ -2,23 +2,37 @@ import { ICoords, ISmokingAreaDetail, ISmokingAreaPreview } from "./atoms";
 
 const API_URL = process.env.REACT_APP_API_URL;
 
-// const testMarkers = [
+// const testMarkers: ISmokingAreaPreview[] = [
 //   {
 //     title: "test1",
 //     coords: { lat: 37.5644805, lng: 126.9784147 },
-//     id: "test1",
+//     id: 1,
 //   },
 //   {
 //     title: "test2",
 //     coords: { lat: 37.5655805, lng: 126.9784147 },
-//     id: "test2",
+//     id: 2,
 //   },
 //   {
 //     title: "test3",
 //     coords: { lat: 37.5666805, lng: 126.9784147 },
-//     id: "test3",
+//     id: 3,
 //   },
 // ];
+
+interface IAreasPreviewData {
+  title: string;
+  id: number;
+  xCoords: string;
+  yCoords: string;
+}
+
+interface IAreasDetailData {
+  title: string;
+  id: number;
+  xCoords: string;
+  yCoords: string;
+}
 
 export const fetchSmokingAreas = async (
   northEastCoords: ICoords,
@@ -43,7 +57,16 @@ export const fetchSmokingAreas = async (
       return { isError: true };
     }
 
-    const data = (await response.json()) as ISmokingAreaPreview[];
+    const json = (await response.json()) as IAreasPreviewData[];
+
+    const data: ISmokingAreaPreview[] = json.map((el) => ({
+      title: el.title,
+      id: el.id,
+      coords: {
+        lat: Number(el.xCoords),
+        lng: Number(el.yCoords),
+      },
+    }));
 
     return { isError: false, data };
   } catch (error) {
@@ -68,7 +91,16 @@ export const fetchNearest = async (myCoords: ICoords) => {
       return { isError: true };
     }
 
-    const data = (await response.json()) as ISmokingAreaPreview;
+    const json = (await response.json()) as IAreasPreviewData;
+
+    const data: ISmokingAreaPreview = {
+      title: json.title,
+      id: json.id,
+      coords: {
+        lat: Number(json.xCoords),
+        lng: Number(json.yCoords),
+      },
+    };
 
     return { isError: false, data };
   } catch (error) {
@@ -77,8 +109,8 @@ export const fetchNearest = async (myCoords: ICoords) => {
   }
 };
 
-export const fetchAreaDetail = async (id: string) => {
-  if (id === "") return { isError: true };
+export const fetchAreaDetail = async (id: number | undefined) => {
+  if (!id) return { isError: true };
   try {
     const response = await fetch(`${API_URL}/markers/${id}`, {
       credentials: "include",
@@ -92,7 +124,16 @@ export const fetchAreaDetail = async (id: string) => {
       return { isError: true };
     }
 
-    const areaDetail = (await response.json()) as ISmokingAreaDetail;
+    const json = (await response.json()) as IAreasDetailData;
+
+    const areaDetail: ISmokingAreaDetail = {
+      title: json.title,
+      id: json.id,
+      coords: {
+        lat: Number(json.xCoords),
+        lng: Number(json.yCoords),
+      },
+    };
 
     return { isError: false, areaDetail };
   } catch (error) {

@@ -14,13 +14,13 @@ export interface ICoords {
 export interface ISmokingAreaPreview {
   title: string;
   coords: ICoords;
-  id: string;
+  id: number;
 }
 
 export interface ISmokingAreaDetail {
   title: string;
   coords: ICoords;
-  id: string;
+  id: number;
 }
 
 export const isDarkTheme = atom<boolean>({
