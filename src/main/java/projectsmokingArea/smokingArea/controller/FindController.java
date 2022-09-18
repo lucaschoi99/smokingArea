@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@CrossOrigin(origins = "http://localhost:3000")
 public class FindController {
 
     private final FindService findService;
@@ -52,9 +54,13 @@ public class FindController {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("utf-8");
+//
+//        response.setHeader("Access-Control-Allow-origin", "http://localhost:3000");
+//        response.setHeader("Access-Control-Allow-Credentials", "true");
 
         String returnValue = objectMapper.writeValueAsString(result);
         response.getWriter().write(returnValue);
+
 
     }
 
